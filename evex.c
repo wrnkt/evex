@@ -258,26 +258,25 @@ int infix_next_right_operand(Arg *args, size_t len, size_t operator_idx, Arg **a
 
 int infix_evaluate(Arg *args, size_t len)
 {
-    size_t priority_idx;
-    Arg *priority;
+    size_t op_idx;
+    Arg *op;
     Arg *l_operand = args, *r_operand = args;
     size_t l_operand_idx, r_operand_idx;
     do {
-        priority_idx = get_priority_op_idx(args, len);
-        priority = &args[priority_idx];
+        op_idx = get_priority_op_idx(args, len);
+        op = &args[op_idx];
 
-        int left_operand = infix_next_left_operand(args, len, priority_idx, &l_operand);
-        int right_operand = infix_next_right_operand(args, len, priority_idx, &r_operand);
-
-        if ( left_operand && right_operand ) {
-            infix_left_eval_op(l_operand, r_operand, priority);
+        if (
+            infix_next_left_operand(args, len, op_idx, &l_operand)
+            &&
+            infix_next_right_operand(args, len, op_idx, &r_operand)
+        ) {
+            infix_left_eval_op(l_operand, r_operand, op);
         } else {
             break;
         }
 
-        if ( l_operand == r_operand ) {
-            error("The left and right operand are equal.");
-        }
+        assert( (l_operand != r_operand) && "The left and right operand are equal." );
 
     } while (1);
 
