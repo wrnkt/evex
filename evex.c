@@ -218,43 +218,30 @@ int infix_left_eval_op(Arg *l, Arg *r, Arg *op)
     return 0;
 }
 
-int infix_next_left_operand(Arg *args, size_t len, size_t operator_idx, Arg **arg)
+typedef int direction;
+#define RIGHT 1
+#define LEFT 0
+
+#define LAST_FROM(dir, len) ((dir) ? ((len) - 1) : (0))
+#define DIRECTION(dir) ((dir) ? (1) : (-1))
+
+int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg)
 {
-    if (operator_idx == 0) {
+    if (operator_idx == LAST_FROM(dir, len)) {
         return 0;
     }
 
     size_t offset = 1;
-    size_t idx = operator_idx - offset;
+    size_t idx = operator_idx + (offset * DIRECTION(dir));
 
     *arg = &args[idx];
-    while ( ((*arg)->type != NUM) ) {
+    while( (*arg)->type != NUM ) {
         ++offset;
-        idx = operator_idx - offset;
+        idx = operator_idx + (offset * DIRECTION(dir));
         *arg = &args[idx];
     }
-
     return 1;
 }
-
-int infix_next_right_operand(Arg *args, size_t len, size_t operator_idx, Arg **arg)
-{
-    if ( operator_idx == (len - 1) ) {
-        return 0;
-    }
-
-    size_t offset = 1;
-    size_t idx = operator_idx + offset;
-
-    *arg = &args[idx];
-    while ( ((*arg)->type != NUM) ) {
-        ++offset;
-        idx = operator_idx + offset;
-        (*arg) = &args[idx];
-    }
-    return 1;
-}
-
 
 int infix_evaluate(Arg *args, size_t len)
 {
@@ -267,9 +254,9 @@ int infix_evaluate(Arg *args, size_t len)
         op = &args[op_idx];
 
         if (
-            infix_next_left_operand(args, len, op_idx, &l_operand)
+            infix_next_operand(LEFT, args, len, op_idx, &l_operand)
             &&
-            infix_next_right_operand(args, len, op_idx, &r_operand)
+            infix_next_operand(RIGHT, args, len, op_idx, &r_operand)
         ) {
             infix_left_eval_op(l_operand, r_operand, op);
         } else {
