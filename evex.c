@@ -8,15 +8,59 @@
 #include <assert.h>
 #include "./util.c"
 
+// NOTE: follow order of operations 0 -> END
+#define SUPPORTED_OPS (char[]) {'*', '+', '-'}
+#define SUPPORTED_OPS_LEN (size_t) sizeof(SUPPORTED_OPS)/sizeof(SUPPORTED_OPS[0])
+
+#define Arg_Fmt "(TYPE: %s | Value: %d | Op: %c | Visited: %d)\n"
+#define Deconstruct_Arg(a) get_type_name(a.type), a.value, a.op, a.visited
+#define Deconstruct_Arg_Ptr(a) get_type_name(a->type), a->value, a->op, a->visited
+
+#define RIGHT 1
+#define LEFT 0
+
+#define LAST_FROM(dir, len) ((dir) ? ((len) - 1) : (0))
+#define DIRECTION(dir) ((dir) ? (1) : (-1))
 
 
 typedef enum {
     UNDEF = -1,
     OP = 0,
     NUM,
-} Type;
+} TYPE;
 
-const char *get_type_name(Type t) {
+typedef char operator;
+typedef size_t priority;
+typedef int visited;
+typedef int direction;
+
+typedef struct {
+    TYPE type;
+    int value;
+    operator op;
+    priority priority;
+    visited visited;
+} Arg;
+
+
+const char *get_type_name(TYPE t);
+void print_curr_expr(size_t count, Arg* args);
+
+int is_op(char *c);
+int is_number(char *c);
+TYPE type_of(char *c);
+
+int infix_valid_against_prev(char *cur, char* prev);
+int infix_validate(int count, char **inputs, Arg *args);
+int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg);
+int infix_left_eval_op(Arg *l, Arg *r, Arg *op);
+int infix_evaluate(Arg *args, size_t len);
+
+size_t op_priority(Arg arg);
+size_t get_priority_op_idx(Arg* args, size_t len);
+
+
+const char *get_type_name(TYPE t) {
     switch (t) {
         case UNDEF: return "Undefined";
         case OP: return "Operation";
@@ -27,25 +71,6 @@ const char *get_type_name(Type t) {
     }
 }
 
-// NOTE: follow order of operations 0 -> END
-#define SUPPORTED_OPS (char[]) {'*', '+', '-'}
-#define SUPPORTED_OPS_LEN (size_t) sizeof(SUPPORTED_OPS)/sizeof(SUPPORTED_OPS[0])
-
-#define Arg_Fmt "(Type: %s | Value: %d | Op: %c | Visited: %d)\n"
-#define Deconstruct_Arg(a) get_type_name(a.type), a.value, a.op, a.visited
-#define Deconstruct_Arg_Ptr(a) get_type_name(a->type), a->value, a->op, a->visited
-
-typedef char operator;
-typedef size_t priority;
-typedef int visited;
-
-typedef struct {
-    Type type;
-    int value;
-    operator op;
-    priority priority;
-    visited visited;
-} Arg;
 
 int is_op(char *c)
 {
@@ -67,7 +92,7 @@ int is_number(char *c)
     return isdigit(*c);
 }
 
-Type type_of(char *c)
+TYPE type_of(char *c)
 {
     if (c == NULL) {
         return -1;
@@ -84,7 +109,7 @@ Type type_of(char *c)
 
 int infix_valid_against_prev(char *cur, char* prev)
 {
-    Type t = type_of(cur);
+    TYPE t = type_of(cur);
     if (t == type_of(prev)) {
         char *type_desc = (t == OP) ? "the operator" : "the number";
         error("%s '%s' cannot follow '%s' in infix notation.", type_desc, cur, prev);
@@ -95,7 +120,7 @@ int infix_valid_against_prev(char *cur, char* prev)
 
 int infix_validate(int count, char **inputs, Arg *args)
 {
-    Type t;
+    TYPE t;
     char *prev_elem;
     char *input;
     for (int i = 0; i < count; ++i) {
@@ -193,13 +218,6 @@ int infix_left_eval_op(Arg *l, Arg *r, Arg *op)
     op->visited = 1;
     return 0;
 }
-
-typedef int direction;
-#define RIGHT 1
-#define LEFT 0
-
-#define LAST_FROM(dir, len) ((dir) ? ((len) - 1) : (0))
-#define DIRECTION(dir) ((dir) ? (1) : (-1))
 
 int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg)
 {
