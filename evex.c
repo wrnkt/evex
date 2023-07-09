@@ -19,10 +19,6 @@
 #define RIGHT 1
 #define LEFT 0
 
-#define LAST_FROM(dir, len) ((dir) ? ((len) - 1) : (0))
-#define DIRECTION(dir) ((dir) ? (1) : (-1))
-
-
 typedef enum {
     UNDEF = -1,
     OP = 0,
@@ -55,6 +51,9 @@ int infix_validate(int count, char **inputs, Arg *args);
 int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg);
 int infix_left_eval_op(Arg *l, Arg *r, Arg *op);
 int infix_evaluate(Arg *args, size_t len);
+
+size_t LAST_FROM(int dir, size_t len);
+int DIRECTION(int dir);
 
 size_t op_priority(Arg arg);
 size_t get_priority_op_idx(Arg* args, size_t len);
@@ -218,6 +217,19 @@ int infix_left_eval_op(Arg *l, Arg *r, Arg *op)
     op->visited = 1;
     return 0;
 }
+
+
+size_t LAST_FROM(int dir, size_t len)
+{
+    return (dir) ? (len - 1) : 0;
+}
+
+
+int DIRECTION(int dir)
+{
+    return (dir) ? (1) : (-1);
+}
+
 
 int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg)
 {
