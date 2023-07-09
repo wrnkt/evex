@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include "./util.c"
+#include "./util.h"
 
 // NOTE: follow order of operations 0 -> END
 #define SUPPORTED_OPS (char[]) {'*', '+', '-'}
