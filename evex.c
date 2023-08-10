@@ -9,7 +9,7 @@
 #include "./util.h"
 
 // NOTE: follow order of operations 0 -> END
-#define SUPPORTED_OPS (char[]) {'*', '+', '-'}
+const char SUPPORTED_OPS[] = {'*', '+', '-'};
 #define SUPPORTED_OPS_LEN (size_t) sizeof(SUPPORTED_OPS)/sizeof(SUPPORTED_OPS[0])
 
 #define Arg_Fmt "(TYPE: %s | Value: %d | Op: %c | Visited: %d)\n"
@@ -38,6 +38,12 @@ typedef struct {
     visited visited;
 } Arg;
 
+typedef enum {
+    UNKNOWN,
+    MULT,
+    ADD,
+} OPERATION_T;
+
 
 const char *get_type_name(TYPE t);
 void print_curr_expr(size_t count, Arg* args);
@@ -49,7 +55,11 @@ TYPE type_of(char *c);
 int infix_valid_against_prev(char *cur, char* prev);
 int infix_validate(int count, char **inputs, Arg *args);
 int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg);
+OPERATION_T op_type_from_operator(operator o);
+
 int infix_left_eval_op(Arg *l, Arg *r, Arg *op);
+void infix_left_eval_add(Arg *l, Arg *r);
+void (*get_operation(OPERATION_T op))(Arg*, Arg*);
 int infix_evaluate(Arg *args, size_t len);
 
 size_t LAST_FROM(int dir, size_t len);
@@ -199,21 +209,48 @@ size_t get_priority_op_idx(Arg* args, size_t len)
     return priority_op_idx;
 }
 
+OPERATION_T op_type_from_operator(operator o)
+{
+    switch (o) {
+        case '*': return MULT;
+        case '+': return ADD;
+        default: return UNKNOWN;
+    }
+}
+
+void infix_left_eval_add(Arg *l, Arg *r)
+{
+    int result = l->value + r->value;
+    l->value = result;
+    r->value = 0;
+}
+
+void (*get_operation(OPERATION_T op))(Arg*, Arg*)
+{
+    switch (op) {
+        case MULT:
+            error("Operation not yet defined.");
+            return NULL;
+        case ADD: return infix_left_eval_add;
+        case UNKNOWN:
+            error("Unsupported operation.");
+            return NULL;
+    }
+}
+
 int infix_left_eval_op(Arg *l, Arg *r, Arg *op)
 {
     assert(l->type == NUM);
     assert(r->type == NUM);
     assert(op->type == OP);
     int result;
-    operator o = op->op;
-    if (o == '+') {
-        result = l->value + r->value;
-        l->value = result;
-        r->value = 0;
-    } else {
-        error("Operation '%c' not implemented.\n");
-        assert(0 && "BAD OPERATION.");
+    OPERATION_T o = op_type_from_operator(op->op);
+    void (*operation)(Arg*, Arg*) = get_operation(o);
+    if (operation == NULL) {
+        error("Undefined operation.");
+        exit(1);
     }
+    operation(l, r);
     op->visited = 1;
     return 0;
 }
@@ -293,6 +330,7 @@ int main(int argc, char **argv)
 
     int result = infix_evaluate(args, MAX_ARGS);
     printf("[RESULT]: %d\n", result);
+    free(args);
 
     return 0;
 }
