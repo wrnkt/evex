@@ -34,6 +34,7 @@ then
     run $@
 else
     echo "[ERROR]: Unsupported option."
+    echo "[INFO]: Supported options: build, clean, run"
 
 fi
 
