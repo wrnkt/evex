@@ -12,12 +12,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        add_subdirectory(docs)
-    else()
-        message(STATUS "Doxygen not found. Not building Docs.")
-    endif()
+#     find_package(Doxygen)
+#     if(DOXYGEN_FOUND)
+#         add_subdirectory(docs)
+#     else()
+#         message(STATUS "Doxygen not found. Not building Docs.")
+#     endif()
 endif()
 
 include(FetchContent)
