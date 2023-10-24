@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include "evex/util.hpp"
+#include "evex/util.h"
 
 // NOTE: follow order of operations 0 -> END
 const char SUPPORTED_OPS[] = {'*', '+', '-'};
@@ -25,7 +25,7 @@ typedef enum {
     NUM,
 } TYPE;
 
-typedef char operatr;
+typedef char operator;
 typedef size_t priority;
 typedef int visited;
 typedef int direction;
@@ -33,7 +33,7 @@ typedef int direction;
 typedef struct {
     TYPE type;
     int value;
-    operatr op;
+    operator op;
     priority priority;
     visited visited;
 } Arg;
@@ -56,7 +56,7 @@ TYPE type_of(char *c);
 int infix_valid_against_prev(char *cur, char* prev);
 int infix_validate(int count, char **inputs, Arg *args);
 int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx, Arg **arg);
-OPERATION_T op_type_from_operator(operatr o);
+OPERATION_T op_type_from_operator(operator o);
 
 int infix_left_eval_op(Arg *l, Arg *r, Arg *op);
 void infix_left_eval_add(Arg *l, Arg *r);
@@ -211,7 +211,7 @@ size_t get_priority_op_idx(Arg* args, size_t len)
     return priority_op_idx;
 }
 
-OPERATION_T op_type_from_operator(operatr o)
+OPERATION_T op_type_from_operator(operator o)
 {
     switch (o) {
         case '*': return MULT;

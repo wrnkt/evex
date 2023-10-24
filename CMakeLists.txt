@@ -4,7 +4,7 @@ project(
     EVEX
     VERSION 0.1
     DESCRIPTION "Command line arithmetic expression parsing and evaluation."
-    LANGUAGES CXX
+    LANGUAGES C CXX
 )
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
