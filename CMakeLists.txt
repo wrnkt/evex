@@ -25,12 +25,19 @@ include(FetchContent)
 set(BOOST_ENABLE_CMAKE ON)
 
 FetchContent_Declare(
-  Boost
+  build_boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
   GIT_TAG boost-1.83.0
 )
-
-FetchContent_MakeAvailable( Boost )
+FetchContent_GetProperties( build_boost )
+if( NOT build_boost_POPULATED )
+    FetchContent_Populate(build_boost)
+    add_subdirectory(
+        ${build_boost_SOURCE_DIR}
+        ${build_boost_BINARY_DIR}
+        EXCLUDE_FROM_ALL
+    )
+endif()
 
 add_subdirectory(src)
 add_subdirectory(apps)
