@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include "evex/util.h"
+#include <util/util.h>
 
 void usage(FILE *stream)
 {

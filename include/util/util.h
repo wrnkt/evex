@@ -6,4 +6,4 @@
 void usage(FILE *stream);
 void error(char *fmt, ...);
 
-#endif
+#endif // UTIL_H
