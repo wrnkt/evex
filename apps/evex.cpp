@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
-#include "./util.h"
+#include "evex/util.hpp"
 
 // NOTE: follow order of operations 0 -> END
 const char SUPPORTED_OPS[] = {'*', '+', '-'};
