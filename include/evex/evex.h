@@ -12,7 +12,7 @@
 #include "util/util.h"
 
 // NOTE: follow order of operations 0 -> END
-const char SUPPORTED_OPS[] = {'*', '+', '-'};
+static const char SUPPORTED_OPS[] = {'*', '+', '-'};
 #define SUPPORTED_OPS_LEN (size_t) sizeof(SUPPORTED_OPS)/sizeof(SUPPORTED_OPS[0])
 
 #define Arg_Fmt "(TYPE: %s | Value: %d | Op: %c | Visited: %d)\n"
