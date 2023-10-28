@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     }
 
     size_t MAX_ARGS = argc - 1;
-    Arg* args = malloc(MAX_ARGS);
+    Arg* args = malloc(MAX_ARGS*(sizeof(Arg)));
 
     argv++;
     if (!infix_validate(MAX_ARGS, argv, args)) {
