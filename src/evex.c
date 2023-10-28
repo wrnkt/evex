@@ -91,7 +91,9 @@ int infix_validate(int count, char **inputs, Arg *args)
             usage(stderr);
             return 0;
         }
+        args[i].visited = 0;
         args[i].type = t;
+
         prev_elem = input;
     }
     return 1;
@@ -228,7 +230,7 @@ int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx
     size_t idx = operator_idx + (offset * DIRECTION(dir));
 
     *arg = &args[idx];
-    while( (*arg)->type != NUM ) {
+    while( ((*arg)->type != NUM) || ((*arg)->visited) ) {
         ++offset;
         idx = operator_idx + (offset * DIRECTION(dir));
         *arg = &args[idx];
