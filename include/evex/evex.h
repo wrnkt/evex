@@ -62,9 +62,9 @@ int infix_next_operand(direction dir, Arg *args, size_t len, size_t operator_idx
 OPERATION_T op_type_from_operator(operator o);
 
 int infix_left_eval_op(Arg *l, Arg *r, Arg *op);
-void infix_left_eval_add(Arg *l, Arg *r);
-void infix_left_eval_sub(Arg *l, Arg *r);
-void (*get_operation(OPERATION_T op))(Arg*, Arg*);
+int infix_left_eval_add(Arg *l, Arg *r);
+int infix_left_eval_sub(Arg *l, Arg *r);
+int (*get_operation(OPERATION_T op))(Arg*, Arg*);
 int infix_evaluate(Arg *args, size_t len);
 
 size_t LAST_FROM(int dir, size_t len);

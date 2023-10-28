@@ -158,21 +158,17 @@ OPERATION_T op_type_from_operator(operator o)
     }
 }
 
-void infix_left_eval_add(Arg *l, Arg *r)
+int infix_left_eval_add(Arg *l, Arg *r)
 {
-    int result = l->value + r->value;
-    l->value = result;
-    r->value = 0;
+    return l->value + r->value;
 }
 
-void infix_left_eval_sub(Arg *l, Arg *r)
+int infix_left_eval_sub(Arg *l, Arg *r)
 {
-    int result = l->value - r->value;
-    l->value = result;
-    r->value = 0;
+    return l->value - r->value;
 }
 
-void (*get_operation(OPERATION_T op))(Arg*, Arg*)
+int (*get_operation(OPERATION_T op))(Arg*, Arg*)
 {
     switch (op) {
         case MULT:
@@ -191,15 +187,21 @@ int infix_left_eval_op(Arg *l, Arg *r, Arg *op)
     assert(l->type == NUM);
     assert(r->type == NUM);
     assert(op->type == OP);
+
     int result;
     OPERATION_T o = op_type_from_operator(op->op);
-    void (*operation)(Arg*, Arg*) = get_operation(o);
+    int (*operation)(Arg*, Arg*) = get_operation(o);
     if (operation == NULL) {
         error("Undefined operation.");
         exit(1);
     }
-    operation(l, r);
+    result = operation(l, r);
+    l->value = result;
+    r->value = 0;
+
     op->visited = 1;
+    r->visited = 1;
+
     return 0;
 }
 
