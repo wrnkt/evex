@@ -1,6 +1,8 @@
 #include <cstddef>
+#include <optional>
 #include <unordered_map>
 #include <vector>
+#include <string>
 
 #include "./evex.hpp"
 
@@ -20,4 +22,6 @@ class tokenizer_t
     size_t current { start };
 
     bool at_end();
+    char advance();
+    std::optional<token_t> scan_token();
 };

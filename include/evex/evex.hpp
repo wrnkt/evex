@@ -13,6 +13,7 @@ typedef enum {
   STAR,
   //
   NUMBER,
+  LETTER,
 } TOKEN_TYPE;
 
 struct token_t {
