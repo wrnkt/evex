@@ -1,2 +1,2 @@
 CompileFlags:
-  Add: [-std=c++20, -std=c99]
+  Add: [-std=c++20]

@@ -1,12 +1,12 @@
-#include <assert.h>
-#include <ctype.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <util/util.h>
+#include <cassert>
+#include <cstring>
+#include <cstddef>
+#include <cstdlib>
+#include <cstdio>
+#include <string>
+#include <cstdarg>
+#include <cassert>
+#include <util/util.hpp>
 
 void usage(FILE *stream)
 {
